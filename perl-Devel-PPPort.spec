@@ -9,7 +9,7 @@
 
 Name:           %{?scl_prefix}perl-Devel-PPPort
 Version:        3.56
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Perl Pollution Portability header generator
 License:        GPL+ or Artistic
 URL:            https://metacpan.org/release/Devel-PPPort
@@ -51,6 +51,8 @@ of old releases, but users can still reap the benefit.
 
 %prep
 %setup -q -n Devel-PPPort-%{version}
+# Normalize shebangs
+%{?scl:scl enable %{scl} '}perl -MConfig -i -pe %{?scl:'"}'%{?scl:"'}s{^#!/usr/bin/perl}{$Config{startperl}}%{?scl:'"}'%{?scl:"'} soak%{?scl:'}
 
 %build
 %{?scl:scl enable %{scl} '}perl Makefile.PL INSTALLDIRS=vendor NO_PACKLIST=1 NO_PERLLOCAL=1 OPTIMIZE="$RPM_OPT_FLAGS" && %{make_build}%{?scl:'}
@@ -73,6 +75,9 @@ unset PERL_CORE SKIP_SLOW_TESTS
 %{_mandir}/man3/*
 
 %changelog
+* Wed Mar 25 2020 Petr Pisar <ppisar@redhat.com> - 3.56-3
+- Normalize shebangs (bug #1817123)
+
 * Fri Dec 20 2019 Jitka Plesnikova <jplesnik@redhat.com> - 3.56-2
 - SCL
 
